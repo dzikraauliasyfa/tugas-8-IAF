@@ -1,0 +1,383 @@
+{
+  "name": "tugas 8 IAF",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "45aefc46-3f49-4939-98b1-a8af61be0315",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        208
+      ],
+      "id": "cf9d14fd-4ef1-4717-8642-3f909c6179c8",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lK4QpakL9yS3T0UU",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1tRsRC5Ut1eNCjOLkDXWuScQB7z0IG0PzRokcqI2iGpo",
+          "mode": "list",
+          "cachedResultName": "Copy of data bitcoin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tRsRC5Ut1eNCjOLkDXWuScQB7z0IG0PzRokcqI2iGpo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tRsRC5Ut1eNCjOLkDXWuScQB7z0IG0PzRokcqI2iGpo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ JSON.parse($('Analisis Sentimen').item.json.text).timestamp }}",
+            "text": "={{ JSON.parse($('Analisis Sentimen').item.json.text).text }}",
+            "status": "={{ JSON.parse($('Analisis Sentimen').item.json.text).status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        0
+      ],
+      "id": "5b5ff380-8c94-4538-959c-a47f6ca55674",
+      "name": "Penyimpanan Hasil",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qoZmtrSs0Ib63J08",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        816,
+        256
+      ],
+      "id": "9ddcb530-e0d2-4f62-bdcd-610312c0d218",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1tRsRC5Ut1eNCjOLkDXWuScQB7z0IG0PzRokcqI2iGpo",
+          "mode": "list",
+          "cachedResultName": "Copy of data bitcoin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tRsRC5Ut1eNCjOLkDXWuScQB7z0IG0PzRokcqI2iGpo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tRsRC5Ut1eNCjOLkDXWuScQB7z0IG0PzRokcqI2iGpo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        256
+      ],
+      "id": "e406fb08-20d9-4254-8454-de913c70952a",
+      "name": "Baca Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qoZmtrSs0Ib63J08",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Inisialisasi variabel penghitung\nlet total_tweets = items.length;\nlet positive = 0;\nlet negative = 0;\nlet neutral = 0;\n\n// Loop melalui setiap item data masuk\nfor (let item of items) {\n    let sentiment = item.json.status;\n    \n    // Sesuaikan pencocokan dengan teks bahasa Indonesia (\"Positif\")\n    if (sentiment === 'Positif') {\n        positive++;\n    } else if (sentiment === 'Negatif') {\n        negative++;\n    } else if (sentiment === 'Netral' || sentiment === 'Neutral') {\n        neutral++;\n    }\n}\n\n// Kembalikan hasil perhitungan ke n8n\nreturn items.map(item => {\n    return {\n        json: {\n            total_tweets: total_tweets,\n            sentimen_positif: positive,\n            sentimen_negatif: negative,\n            sentimen_netral: neutral,\n            // Jika ingin meneruskan data asli juga\n            timestamp: item.json.timestamp,\n            text: item.json.text,\n            status: item.json.status\n        }\n    };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        256
+      ],
+      "id": "71f7d0d1-843c-4437-80d6-4aa7d6d052b5",
+      "name": "Analisis Data"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1488,
+        432
+      ],
+      "id": "ac99d2ec-0a94-4b91-83c1-30e4cef7299e",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "lK4QpakL9yS3T0UU",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7365914901",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1856,
+        256
+      ],
+      "id": "14cd7025-ab86-4134-8ce2-f41c976f40fd",
+      "name": "Send a text message",
+      "webhookId": "b155b345-ff65-47d6-a448-7af65f939bac",
+      "credentials": {
+        "telegramApi": {
+          "id": "y5qb95AvFv7EHIsu",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Waktu Eksekusi: {{ $('Schedule Trigger').item.json.timestamp }}\n\nData Terkini dari API:\n- Bitcoin: USD ${{ $('$BTC & $ETH').item.json.bitcoin.usd }} (24h Change: {{ $('$BTC & $ETH').item.json.bitcoin.usd_24h_change }}%)\n- Ethereum: USD ${{ $('$BTC & $ETH').item.json.ethereum.usd }} (24h Change: {{ $('$BTC & $ETH').item.json.ethereum.usd_24h_change }}%)\n\nTugas:\nAnalisis data crypto di atas dan berikan respons HANYA dalam format JSON valid tanpa teks/markdown tambahan di luar objek JSON.\n\nFormat JSON yang wajib diikuti:\n{\n  \"timestamp\": \"{{ $('Schedule Trigger').item.json.timestamp }}\",\n  \"status\": \"Positif\" | \"Negatif\" | \"Neutral\",\n  \"text\": \"Tuliskan analisis ringkas pergerakan harga Bitcoin dan Ethereum dalam 2-3 kalimat di sini.\"\n}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        448,
+        0
+      ],
+      "id": "3348931f-fa2f-40ac-a569-d56156cf0368",
+      "name": "Analisis Sentimen"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Anda adalah seorang analis sentimen media sosial.\nTuliskan kesimpulan singkat (dalam bahasa Indonesia) untuk laporan Telegram, berdasarkan data berikut:\n\n- Total Tweet Dianalisis: {{ $json.total_tweets }}\n- Sentimen Positif: {{ $json.sentimen_positif }}\n- Sentimen Negatif: {{ $json.sentimen_negatif }}\n- Sentimen Netral: {{ $json.sentimen_netral }}\n\nBerikan ringkasan singkat tentang apa arti angka-angka ini (misalnya, \"Sentimen hari ini cenderung positif,\" \"Ada banyak keraguan di pasar,\" dll.).\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1488,
+        256
+      ],
+      "id": "64139a31-56aa-4c9f-b280-2122ab047435",
+      "name": "Membuat Kesimpulan"
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd,idr&include_24hr_change=true",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "31065f1e-8412-4cbf-8788-cf96a5e56c0f",
+      "name": "$BTC & $ETH"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "$BTC & $ETH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analisis Sentimen",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Baca Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baca Data": {
+      "main": [
+        [
+          {
+            "node": "Analisis Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analisis Data": {
+      "main": [
+        [
+          {
+            "node": "Membuat Kesimpulan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Membuat Kesimpulan",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analisis Sentimen": {
+      "main": [
+        [
+          {
+            "node": "Penyimpanan Hasil",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Membuat Kesimpulan": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "$BTC & $ETH": {
+      "main": [
+        [
+          {
+            "node": "Analisis Sentimen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7f7417b7-85c6-4552-8396-0e9b99b023e9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc96f10ae7dc95d3c138575ba243a0a167923dbcb524841d451aadf9135d5fb3"
+  },
+  "nodeGroups": [],
+  "id": "OYgDsBqzIhHWQRur",
+  "tags": []
+}
